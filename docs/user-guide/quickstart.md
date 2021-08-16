@@ -596,7 +596,6 @@ Expected output:
 ```
 team-a
 ├── [s] service-2
-├── [s] service-3
 └── [s] service-4
      └── staging
 ```
@@ -650,7 +649,7 @@ kubectl -n team-b get secrets
 But now we’ve started running an untrusted service in `team-b`, so we’ve decided not to share that secret with it anymore. We can do this by setting the propagation selectors on the secret:
 
 ```bash
-kubectl annotate secret my-secret -n acme-org propagate.hnc.x-k8s.io/treeSelect=!team-b
+kubectl annotate secret my-secret -n acme-org propagate.hnc.x-k8s.io/treeSelect=team-b
 ```
 
 Now you’ll see the secret is no longer accessible from `team-b`:
@@ -662,7 +661,7 @@ kubectl -n team-b get secrets
 If we add any children below `team-b`, the secret won’t be propagated to them, either.
 
 There are several ways to select the namespaces. The `treeSelect` annotation can
-take a list (e.g. `!team-b, !team-a`) to exclude namespaces or a single
+take a list (e.g. `team-b, team-a`) to exclude namespaces or a single
 namespace (e.g. `team-a`) to include. You can also use the `select` annotation
 that takes a [standard Kubernetes label
 selector](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors),
